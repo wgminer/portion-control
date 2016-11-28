@@ -1,0 +1,17 @@
+.invite
+    button.button.button--block(ng-click="invite()") Invite
+.follow(ng-repeat="user in following")
+    .follow__picture
+        img(ng-src="{{ user.picture }}", alt="{{ user.name }}'s picture")
+    p.follow__name {{ user.name }}
+    .follow__actions
+        button.button.button--pressed
+            span.hide-on-hover Following
+            span.show-on-hover Unfollow
+p.tab__panel__subtitle Follow your friends!
+.follow(ng-repeat="user in following")
+    .follow__picture
+        img(ng-src="{{ user.picture }}", alt="{{ user.name }}'s picture")
+    p.follow__name {{ user.name }}
+    .follow__actions
+        button.button Follow

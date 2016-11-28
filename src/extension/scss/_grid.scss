@@ -1,0 +1,51 @@
+$grid-columns: 6;
+
+@mixin generate-grid ($breakpoint: null) {
+
+    @for $i from 1 to $grid-columns {
+
+        @if $breakpoint {
+            $suffix: #{$i}--#{$breakpoint};
+        } @else {
+            $suffix: $i;
+        }
+
+        .col-#{$suffix} {
+            position: relative;
+            width: percentage(($i / $grid-columns));
+        }
+    }
+}
+
+.container {
+    @include clearfix;
+    margin: 0 auto;
+    max-width: 60rem;
+    padding: 0 2rem;
+
+    &--sm {
+        max-width: 30rem;
+        padding-bottom: 4rem;
+    }
+}
+
+.row {
+    @include clearfix;
+    margin: 0 -1rem;
+
+    &--vertically-center {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.col {
+    float: left;
+    padding: 0 1rem;
+}
+
+@include generate-grid();
+
+@media (max-width: 800px) {
+    @include generate-grid(mobile);
+}

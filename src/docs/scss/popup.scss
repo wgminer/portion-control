@@ -1,0 +1,129 @@
+@import "base";
+
+body {
+    width: $popup-width;
+    min-height: $popup-height;
+}
+
+.footer {
+    @include clearfix;
+    border-top: $border;
+    padding: 0 1rem;
+
+    .faux-link,
+    a {
+        float: left;
+        display: block;
+        padding: .5em 0;
+        margin-right: 1em;
+    }
+}
+
+.spinner {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    width: 100%;
+    background-color: #fff;
+}
+
+.feed {
+    background-color: #fff;
+    overflow: auto;
+    min-height: 300px;
+}
+
+.item {
+    display: flex;
+    padding: .75rem 1rem;
+    // border-bottom: $border;
+    text-decoration: none;
+    color: $text;
+
+    &:hover {
+        background-color: rgba($link, .1);
+        cursor: pointer;
+        color: $text;
+
+        .flipper {
+            transform: rotateY(180deg);
+        }
+    }
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &__picture {
+        flex: 0 0 auto;
+        overflow: hidden;
+        border-radius: $radius;
+        width: 3rem;
+        height: 3rem;
+        perspective: 1000;
+
+        /* flip the pane when hovered */
+        
+
+        .front, .back {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* flip speed goes here */
+        .flipper {
+            transition: 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        /* hide back of pane during swap */
+        .front, 
+        .back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* front pane, placed above back */
+        .front {
+            z-index: 2;
+            /* for firefox 31 */
+            transform: rotateY(0deg);
+        }
+
+        /* back, initially hidden pane */
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        img {
+            width: 100%;
+            border-radius: $radius;
+            display: block;
+        }
+    }
+
+    &__content {
+        margin-left: 1rem;
+        flex: 1 1 auto;
+        overflow: hidden;
+        padding-top: 6px;
+    }
+
+    &__title {
+        @include ellipsis;
+        width: 100%;
+        margin: 0;
+    }
+
+    &__name {
+        @include ellipsis;
+        margin: 0;
+        font-size: .75rem;
+        color: #999;
+    }
+}

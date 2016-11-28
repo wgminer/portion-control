@@ -1,0 +1,55 @@
+{
+  "name": "Portion Control",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://*.soundcloud.com https://use.typekit.net https://cdn.firebase.com https://*.firebaseio.com https://connect.facebook.net; object-src 'self'",
+  "icons": {
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
+  },
+  "default_locale": "en",
+  "options_page": "index.html#/options",
+  "background": {
+    "scripts": [
+      "js/firebase.js",
+      "js/soundcloud.js",
+      "js/config.js",
+      "js/background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "img/icon19.png",
+    "default_title": "Sound Spy",
+    "default_popup": "popup.html"
+  },
+  "permissions": [  
+    "https://soundcloud.com/",
+    "https://sound-spy.firebaseio.com/*",
+    "https://connect.soundcloud.com/sdk/sdk-3.0.0.js",
+    "identity",
+    "storage",
+    "tabs",
+    "*://use.typekit.net/*",
+    "webRequest",
+    "webRequestBlocking",
+    "http://www.getsoundspy.com/",
+    "https://www.getsoundspy.com/"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://soundcloud.com/*",
+        "http://localhost:3000/*"
+      ],
+      "js": [
+        "js/jquery.js",
+        "js/config.js",
+        "js/inject.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "app.html"
+  ]
+}

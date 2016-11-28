@@ -1,0 +1,25 @@
+extends extends/site
+
+block title
+    title See what your friends are listening to | Soundspy
+
+block body
+    include includes/masthead
+    main(ng-controller="IndexCtrl")
+        .hero
+            .container
+                .row
+                    .col.col-3
+                        p.hero__tagline See what your friends<br>are listening to now
+                        div
+                            a.hero__button.button(href= extensionUrl, aria-label="Available in the chrome web store")
+                                img(src="img/chrome.png", alt="Available in the chrome web store")
+
+                    .col.col-3
+                        .popup
+                            include includes/feed
+                            footer.footer
+                                span.faux-link Profile
+                                span.faux-link Find Friends
+                    
+        .container
