@@ -1,37 +1,90 @@
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
 var zip = require('gulp-zip');
+var del = require('del');
+var postcss = require('gulp-postcss');
+var pug = require('gulp-pug');
+var sass = require('gulp-sass');
 
-var ftp = require('vinyl-ftp');
-var gutil = require('gulp-util');
-var secrets = require('./secrets.json');
-
-require('require-dir')('./gulp');
-
-gulp.task('serve', function (cb) {
-    runSequence(['build-site', 'build-extension'], 'serve-site', ['watch-site', 'watch-extension'], cb);
+gulp.task('clean', function () {
+    return del(['./build', './portion-control.zip']);
 });
 
-gulp.task('deploy', ['build-site', 'build-extension'], function (cb) {
+gulp.task('img', function() {
+    return gulp.src(['./src/img/**/*'])
+        .pipe(gulp.dest('./build/img'));
+});
 
-    var conn = ftp.create({
-        host: secrets.production.host,
-        user: secrets.production.user,
-        password: secrets.production.password,
-        parallel: 3,
-        maxConnections: 5,
-        log: gutil.log
-    }); 
+gulp.task('json', function() {
+    return gulp.src(['./src/**/*.json'])
+        .pipe(gulp.dest('./build'));
+});
 
-    var globs = [
-        './build/site/**',
+gulp.task('scss', function () {
+
+    var plugins = [
+        require('autoprefixer'),
+        require('cssnano')
     ];
 
-    gulp.src('./build/extension/*')
-        .pipe(zip('extension.zip'))
-        .pipe(gulp.dest('./build'));
+    return gulp.src('./src/scss/**/*.scss')
+        .pipe(sass())
+        .on('error', function (err) {
+            gutil.log(gutil.colors.red(err));
+            gutil.beep();
+            this.emit('end');
+        })
+        .pipe(postcss(plugins))
+        .pipe(gulp.dest('./build/css'));
+});
 
-    return gulp.src(globs, {base: './build/site', buffer: false})
-        .pipe(conn.newer(secrets.production.path))
-        .pipe(conn.dest(secrets.production.path));
+gulp.task('pug', function() {
+    return gulp.src('./src/**/*.pug')
+        .pipe(pug())
+        .on('error', function (err) {
+            gutil.log(gutil.colors.red(err));
+            gutil.beep();
+            this.emit('end');
+        })
+        .pipe(gulp.dest('./build'));
+});
+
+gulp.task('js', function () {
+
+    var scripts = [ 
+        './libs/jquery/dist/jquery.js',
+        './libs/lodash/lodash.js',
+        './libs/firebase/firebase.js',
+        './libs/angular/angular.js',
+        './libs/angularfire/dist/angularfire.js',
+        './libs/moment/moment.js',
+        './libs/angular-moment/angular-moment.js',
+        './libs/angular-ui-router/release/angular-ui-router.js',
+        './src/js/**/*.js'
+    ];
+
+    return gulp.src(scripts)
+        .pipe(gulp.dest('./build/js'));
+});
+
+gulp.task('build', function (cb) {
+    runSequence('clean', ['img', 'json', 'pug', 'scss', 'js'], cb);
+});
+
+gulp.task('watch', function () {
+    gulp.watch('scss/**/*.scss', {cwd: './src'}, ['scss']);
+    gulp.watch('**/*.pug', {cwd: './src'}, ['pug']);
+    gulp.watch('img/**/*', {cwd: './src'}, ['img']);
+    gulp.watch(['js/**/*.js', '**/*.json'], {cwd: './src'}, ['json', 'js']);
+});
+
+gulp.task('zip', ['build'], function () {
+    return gulp.src('build/**/*')
+        .pipe(zip('portion-control.zip'))
+        .pipe(gulp.dest('./'));
+});
+
+gulp.task('serve', function (cb) {
+    runSequence('zip', 'watch', cb);
 });
