@@ -1,0 +1,20 @@
+doctype html
+html(lang="en")
+    head
+        title Options | Portion Control
+        link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
+        link(rel="stylesheet", href="css/options.css")
+        script(src="js/options.js")
+    body
+        .masthead
+            .container Portion Control        
+        .options
+            h1.options__title Options
+            .form-group
+                label(for="junk-food") Junk Foods
+                textarea#junk-food.form-control(type="text", name="junk-food")
+            .form-group
+                label(for="junk-food") Veggies
+                textarea#veggies.form-control(type="text", name="junk-food")
+            button.btn.btn-default.js--save Save

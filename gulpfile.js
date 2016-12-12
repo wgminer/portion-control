@@ -24,8 +24,7 @@ gulp.task('json', function() {
 gulp.task('scss', function () {
 
     var plugins = [
-        require('autoprefixer'),
-        require('cssnano')
+        require('autoprefixer')
     ];
 
     return gulp.src('./src/scss/**/*.scss')

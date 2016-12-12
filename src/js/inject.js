@@ -1,71 +1,97 @@
-console.log('Soundspy injected. Waiting for page to load...');
+// 10 minute default
+var snoozeDuration = 10 * 60 * 1000;
+chrome.storage.sync.get('snoozeDuration', function(items) {
+	if (items.snoozeDuration) {
+    	snoozeDuration = items.snoozeDuration;
+	}
+});
 
-var readyStateCheckInterval = setInterval(function() {
-    if (document.readyState === 'complete') {
-
-        clearInterval(readyStateCheckInterval);
-
-        var setupTransferEvent = function () {
-            console.log('Watching');
-
-            var injectTransferHandler = function () {
-
-                var transferData = $('#transfer')[0].dataset;
-
-                if (transferData.complete) {
-                    
-                    $('#transfer').unbind('DOMSubtreeModified', injectTransferHandler);
-
-                    chrome.storage.local.get(['ss_messageRoute'], function(items) {
-                        
-                        chrome.storage.local.set({
-                            ss_authToken: transferData.token, 
-                            ss_uid: transferData.uid,
-                            ss_friends: JSON.parse(transferData.friends ? transferData.friends : [])
-                        }, function () {
-                            chrome.runtime.sendMessage({redirect: 'chrome-extension://' + ss_config.id + '/index.html#' + items.ss_messageRoute});
-                        });
-                    });
-                }
-            }
-
-            injectTransferHandler();
-
-            $('#transfer').bind('DOMSubtreeModified', injectTransferHandler)
-        }
-
-        var currentlyPlaying = false;
-        var setupPlayControlWatcher = function () {
-            $('.playControls').bind('DOMSubtreeModified', function(e) {
-                if (e.target.innerHTML.length > 0) {
-
-                    $title = $('.playbackSoundBadge__title');
-                    $artwork = $('.playbackSoundBadge__avatar span')[0].style.backgroundImage;
-                    var src = $artwork.split('"')[1].replace(/50x50/g, '200x200');;
-                    var href = $title.attr('href');
-
-                    if (href) {
-
-                        var playing = {
-                            title: $title.attr('title'),
-                            url: 'https://soundcloud.com' + $title.attr('href'),
-                            artwork: src,
-                            timestamp: Date.now()
-                        }
-
-                        if (currentlyPlaying === false || currentlyPlaying.url !== playing.url) {
-                            sendToBackground(playing)
-                        }
-                    }
-                }
-            });
-        }
-
-        if (window.location.pathname == '/authentication.html') {
-            setupTransferEvent();
-        } else {
-            setupPlayControlWatcher();
-        }
-
+function sample(arr, size) {
+    var shuffled = arr.slice(0), i = arr.length, temp, index;
+    while (i--) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
     }
-}, 10);
+    return shuffled.slice(0, size);
+}
+
+function showOverlay (url, veggies) {
+	var body = document.getElementsByTagName('body')[0];
+	body.style.overflow = 'hidden';
+	
+	var overlay = '<div id="portion-control"><div><h1>Try these healthy options instead!</h1><ul>';
+
+	if (veggies.length > 3) {
+		veggies = sample(veggies, 3);
+	}
+
+	veggies.forEach(function (veg) {
+		overlay += '<li><a href="' + veg + '">' + veg + '</a></li>';
+	});
+
+	overlay += '</ul><button id="remove-overlay">Nah, not right now</button></div></div>';
+
+	body.innerHTML += overlay;
+
+	setTimeout(function(){
+	   	document.getElementById("remove-overlay").addEventListener('click', function () {
+	   		removeOverlay(url);
+	   	});
+	}, 10);
+}
+
+function removeOverlay (url) {
+	var body = document.getElementsByTagName('body')[0];
+	body.style.overflow = '';
+	document.getElementById('portion-control').remove();
+
+	chrome.storage.sync.get('snoozed', function(items) {
+		var snoozed = items.snoozed 
+		if (typeof snoozed == 'undefined') snoozed = {};
+	    snoozed[url] = Date.now() + snoozeDuration;
+	    chrome.storage.sync.set({
+	        snoozed: snoozed
+	    }, function() {
+	        console.log(snoozed);
+	    });
+
+	});
+
+}
+
+function isSnoozed (snoozed, url) {
+	var now = Date.now();
+	if (snoozed && snoozed[url] && snoozed[url] > now) {
+		console.log('But it\'s snoozed..');
+		return true;
+	}
+	return false;
+}
+
+chrome.storage.sync.get(['veggies', 'junkFood', 'snoozed'], function (items) {
+
+    var interval = setInterval(function () {
+    	if (document.getElementsByTagName('body')[0]) {
+    		clearInterval(interval);
+	    	for (var i = 0; i < items.junkFood.length; i++) {
+	    		var url = items.junkFood[i];
+
+	    	    if (window.location.href.indexOf(url) > -1) {
+
+	    	    	console.log('Match with ' + url);
+	    	    	
+	    	    	if (!isSnoozed(items.snoozed, url)) {
+	    	    		
+	    	    		console.log('Not snoozed!');
+	    	    		showOverlay(url, items.veggies);
+
+	    	    		break;
+	    	    	}
+	    	    }
+	    	}
+	    }
+    });
+
+});
