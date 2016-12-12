@@ -20,11 +20,16 @@ $(function () {
     }
 
     $('.js--save').click(function () {
+        var $this = $(this);
         chrome.storage.sync.set({
             veggies: parse($('#veggies').val()),
             junkFood: parse($('#junk-food').val())
         }, function() {
-            console.log('Saved!');
+            $this.text('Saved!').addClass('btn-success').attr('disabled', true);
+            setTimeout(function () {
+                $this.text('Save').removeClass('btn-success').attr('disabled', false);
+            }, 1500);
+
         });
     });
 
