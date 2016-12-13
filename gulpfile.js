@@ -6,14 +6,16 @@ var del = require('del');
 var postcss = require('gulp-postcss');
 var pug = require('gulp-pug');
 var sass = require('gulp-sass');
+var open = require('gulp-open');
+var upload = require('./upload.js');
 
 gulp.task('clean', function () {
     return del(['./build', './portion-control.zip']);
 });
 
-gulp.task('img', function() {
-    return gulp.src(['./src/img/**/*'])
-        .pipe(gulp.dest('./build/img'));
+gulp.task('assets', function() {
+    return gulp.src(['./src/assets/**/*'])
+        .pipe(gulp.dest('./build/assets'));
 });
 
 gulp.task('json', function() {
@@ -68,14 +70,19 @@ gulp.task('js', function () {
 });
 
 gulp.task('build', function (cb) {
-    runSequence('clean', ['img', 'json', 'pug', 'scss', 'js'], cb);
+    runSequence('clean', ['assets', 'json', 'pug', 'scss', 'js'], cb);
+});
+
+gulp.task('open', function (cb) {
+    gulp.src(__filename)
+        .pipe(open({uri: "http://reload.extensions"}));
 });
 
 gulp.task('watch', function () {
-    gulp.watch('scss/**/*.scss', {cwd: './src'}, ['scss']);
-    gulp.watch('**/*.pug', {cwd: './src'}, ['pug']);
-    gulp.watch('img/**/*', {cwd: './src'}, ['img']);
-    gulp.watch(['js/**/*.js', '**/*.json'], {cwd: './src'}, ['json', 'js']);
+    gulp.watch('scss/**/*.scss', {cwd: './src'}, ['scss', 'open']);
+    gulp.watch('**/*.pug', {cwd: './src'}, ['pug', 'open']);
+    gulp.watch('assets/**/*', {cwd: './src'}, ['assets', 'open']);
+    gulp.watch(['js/**/*.js', '**/*.json'], {cwd: './src'}, ['json', 'js', 'open']);
 });
 
 gulp.task('zip', ['build'], function () {
@@ -84,6 +91,17 @@ gulp.task('zip', ['build'], function () {
         .pipe(gulp.dest('./'));
 });
 
+gulp.task('upload', function () {
+
+    var options = require('./secrets.json');
+
+    return gulp.src('./portion-control.zip')
+        .pipe(upload(options))
+        .pipe(gulp.dest('./'));
+
+});
+
+
 gulp.task('serve', function (cb) {
-    runSequence('zip', 'watch', cb);
+    runSequence('zip', 'watch', 'open', cb);
 });

@@ -5,8 +5,8 @@ chrome.storage.sync.get('snoozeDuration', function(items) {
     	snoozeDuration = items.snoozeDuration;
 	}
 });
-
-function sample(arr, size) {
+	
+function sample (arr, size) {
     var shuffled = arr.slice(0), i = arr.length, temp, index;
     while (i--) {
         index = Math.floor((i + 1) * Math.random());
@@ -18,22 +18,36 @@ function sample(arr, size) {
 }
 
 function showOverlay (url, veggies) {
-	var body = document.getElementsByTagName('body')[0];
-	body.style.overflow = 'hidden';
+
+    var title = sample([
+            'Are you sure!?',
+            'Try these healthy options!',
+            'Well that\'s not very healthy...',
+            'Feed your mind instead!',
+            'Boo!',
+            'Don\'t do it!',
+        ], 1);
 	
-	var overlay = '<div id="portion-control"><div><h1>Try these healthy options instead!</h1><ul>';
+    var body = document.getElementsByTagName('body')[0];
+	body.style.overflow = 'hidden';
+	body.innerHTML += '<div id="portion-control"><p class="brand">Portion Control</p><div><h1>' + title + '</h1><ul></ul><button id="remove-overlay">Nah, not right now</button></div></div>';
+    
+    if (veggies.length > 3) {
+        veggies = sample(veggies, 3);
+    }
 
-	if (veggies.length > 3) {
-		veggies = sample(veggies, 3);
-	}
+    veggies.forEach(function (veg) {
 
-	veggies.forEach(function (veg) {
-		overlay += '<li><a href="' + veg + '">' + veg + '</a></li>';
-	});
-
-	overlay += '</ul><button id="remove-overlay">Nah, not right now</button></div></div>';
-
-	body.innerHTML += overlay;
+        $.get('//opengraph.io/api/1.0/site/' + encodeURI(veg), function (data) {
+            var item = `<li class="veggie">
+                <a href="` + veg + `">
+                    <h2 class="veggie__title">` + data.hybridGraph.site_name + `</h2>
+                    <p class="veggie__description">` + data.hybridGraph.description.split('. ')[0] + `.</p>
+                </a>
+            </li>`;
+            $('#portion-control ul').append(item);
+        });
+    });
 
 	setTimeout(function(){
 	   	document.getElementById("remove-overlay").addEventListener('click', function () {
@@ -75,6 +89,9 @@ chrome.storage.sync.get(['veggies', 'junkFood', 'snoozed'], function (items) {
     var interval = setInterval(function () {
     	if (document.getElementsByTagName('body')[0]) {
     		clearInterval(interval);
+
+    		if (typeof items.junkFood == 'undefined') return false;
+
 	    	for (var i = 0; i < items.junkFood.length; i++) {
 	    		var url = items.junkFood[i];
 

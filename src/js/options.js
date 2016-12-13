@@ -10,12 +10,10 @@ $(function () {
     }
 
     var restore = function () {
-        chrome.storage.sync.get({
-            veggies: ['bbc.co.uk', 'test.com'],
-            junkFood: ['facebook.com', 'reddit.com']
-        }, function(items) {
+        chrome.storage.sync.get(function(items) {
             $('#veggies').val(stitch(items.veggies));
             $('#junk-food').val(stitch(items.junkFood));
+            $('#snooze-duration').val(items.snoozeDuration / 60 / 1000);
         });
     }
 
@@ -23,7 +21,8 @@ $(function () {
         var $this = $(this);
         chrome.storage.sync.set({
             veggies: parse($('#veggies').val()),
-            junkFood: parse($('#junk-food').val())
+            junkFood: parse($('#junk-food').val()),
+            snoozeDuration: parseInt($('#snooze-duration').val(), 10) * 60 * 1000
         }, function() {
             $this.text('Saved!').addClass('btn-success').attr('disabled', true);
             setTimeout(function () {
