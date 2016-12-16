@@ -6,6 +6,7 @@ var del = require('del');
 var postcss = require('gulp-postcss');
 var pug = require('gulp-pug');
 var sass = require('gulp-sass');
+var io = require('socket.io');
 var open = require('gulp-open');
 var upload = require('./upload.js');
 
@@ -73,16 +74,11 @@ gulp.task('build', function (cb) {
     runSequence('clean', ['assets', 'json', 'pug', 'scss', 'js'], cb);
 });
 
-gulp.task('open', function (cb) {
-    gulp.src(__filename)
-        .pipe(open({uri: "http://reload.extensions"}));
-});
-
 gulp.task('watch', function () {
-    gulp.watch('scss/**/*.scss', {cwd: './src'}, ['scss', 'open']);
-    gulp.watch('**/*.pug', {cwd: './src'}, ['pug', 'open']);
-    gulp.watch('assets/**/*', {cwd: './src'}, ['assets', 'open']);
-    gulp.watch(['js/**/*.js', '**/*.json'], {cwd: './src'}, ['json', 'js', 'open']);
+    gulp.watch('scss/**/*.scss', {cwd: './src'}, ['scss']);
+    gulp.watch('**/*.pug', {cwd: './src'}, ['pug']);
+    gulp.watch('assets/**/*', {cwd: './src'}, ['assets']);
+    gulp.watch(['js/**/*.js', '**/*.json'], {cwd: './src'}, ['json', 'js']);
 });
 
 gulp.task('zip', ['build'], function () {
@@ -103,5 +99,5 @@ gulp.task('upload', function () {
 
 
 gulp.task('serve', function (cb) {
-    runSequence('zip', 'watch', 'open', cb);
+    runSequence('zip', 'watch', cb);
 });

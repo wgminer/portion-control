@@ -14,11 +14,14 @@
       "js/background.js"
     ]
   },
+  "web_accessible_resources": [
+    "assets/*"
+  ],
   "content_scripts": [
     { 
       "matches": ["http://*/*", "https://*/*"], 
       "css": ["css/inject.css"],
-      "js": ["js/jquery.js", "js/inject.js"],
+      "js": ["js/jquery.js", "js/lodash.js", "js/inject.js"],
       "run_at": "document_start"
     }
   ],
@@ -26,9 +29,6 @@
     "activeTab",
     "https://ajax.googleapis.com/",
     "storage"
-  ],
-  "web_accessible_resources": [
-    "font/*.woff2"
   ],
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com; object-src 'self'"
 }

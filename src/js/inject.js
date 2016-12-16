@@ -1,44 +1,42 @@
 // 10 minute default
 var snoozeDuration = 10 * 60 * 1000;
+var buttonLocked = true;
+
 chrome.storage.sync.get('snoozeDuration', function(items) {
 	if (items.snoozeDuration) {
     	snoozeDuration = items.snoozeDuration;
 	}
 });
 	
-function sample (arr, size) {
-    var shuffled = arr.slice(0), i = arr.length, temp, index;
-    while (i--) {
-        index = Math.floor((i + 1) * Math.random());
-        temp = shuffled[index];
-        shuffled[index] = shuffled[i];
-        shuffled[i] = temp;
-    }
-    return shuffled.slice(0, size);
+function countdown () {
+
+    setInterval()
+
 }
 
 function showOverlay (url, veggies) {
 
-    var title = sample([
-            'Are you sure!?',
-            'Try these healthy options!',
-            'Well that\'s not very healthy...',
-            'Feed your mind instead!',
-            'Boo!',
-            'Don\'t do it!',
-        ], 1);
+    var title = _.sample([
+        'Are you sure!?',
+        'Try these healthy options!',
+        'Feed your mind instead!',
+        'Boo!',
+        'Don\'t do it!',
+        'Do something productive!'
+    ]);
 	
     var body = document.getElementsByTagName('body')[0];
 	body.style.overflow = 'hidden';
-	body.innerHTML += '<div id="portion-control"><p class="brand">Portion Control</p><div><h1>' + title + '</h1><ul></ul><button id="remove-overlay">Nah, not right now</button></div></div>';
+	body.innerHTML += '<div id="portion-control"><p class="brand">Portion Control</p><div><h1>' + title + '</h1><ul></ul><button id="remove-overlay" class="is--loading"><span class="countdown"></span><span class="fine">Nah, not right now</span></button></div></div>';
     
-    if (veggies.length > 3) {
-        veggies = sample(veggies, 3);
-    }
+    // if (veggies.length > 3) {
+    //     veggies = _.sample(veggies, 3);
+    // }
 
     veggies.forEach(function (veg) {
 
-        $.get('//opengraph.io/api/1.0/site/' + encodeURI(veg), function (data) {
+        $.get('//opengraph.io/api/1.0/site/' + encodeURI(veg) + '?app_id=5853677981a0d71a2e1c7986', function (data) {
+            console.log(data);
             var item = `<li class="veggie">
                 <a href="` + veg + `">
                     <h2 class="veggie__title">` + data.hybridGraph.site_name + `</h2>
