@@ -7,7 +7,6 @@ var postcss = require('gulp-postcss');
 var pug = require('gulp-pug');
 var sass = require('gulp-sass');
 var io = require('socket.io');
-var open = require('gulp-open');
 var upload = require('./upload.js');
 
 gulp.task('clean', function () {

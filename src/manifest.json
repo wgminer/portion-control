@@ -21,7 +21,7 @@
     { 
       "matches": ["http://*/*", "https://*/*"], 
       "css": ["css/inject.css"],
-      "js": ["js/jquery.js", "js/lodash.js", "js/inject.js"],
+      "js": ["js/jquery.js", "js/lodash.js", "js/typed.js", "js/inject.js"],
       "run_at": "document_start"
     }
   ],

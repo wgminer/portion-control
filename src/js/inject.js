@@ -8,10 +8,20 @@ chrome.storage.sync.get('snoozeDuration', function(items) {
 	}
 });
 	
-function countdown () {
-
-    setInterval()
-
+function countdown (sec) {
+	var $el = $('#remove-overlay');
+    var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
+    function timer () {
+      	sec-=1;
+      	if (sec <= 0) {
+        	clearInterval(counter);
+        	$el.removeClass('is--loading');
+        	//counter ended, do something here
+        	return false;
+      	}
+      	$el.find('.countdown').text(sec);
+      	//Do code for showing the number of seconds here
+    }
 }
 
 function showOverlay (url, veggies) {
@@ -101,6 +111,7 @@ chrome.storage.sync.get(['veggies', 'junkFood', 'snoozed'], function (items) {
 	    	    		
 	    	    		console.log('Not snoozed!');
 	    	    		showOverlay(url, items.veggies);
+	    	    		countdown(10);
 
 	    	    		break;
 	    	    	}

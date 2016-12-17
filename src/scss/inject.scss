@@ -5,6 +5,8 @@
     src: url("chrome-extension://__MSG_@@extension_id__/assets/WorkSans-Regular.ttf"); 
 }
 
+$border: 1px solid #282828;
+
 #portion-control {
 	// END RESET
     color: #282828;
@@ -57,27 +59,41 @@
     	background: transparent;
     	margin: 0;
     	text-transform: uppercase;
-    	color: #666;
+    	color: #282828;
     	padding: 10px 15px;
     	font-size: 12px;
-    	border: 1px solid #999;
+        line-height: 20px;
+    	border: $border;
     	cursor: pointer;
     	font-family: inherit;
+        transition: all .5s ease;
         
-
         .countdown {
             display: none;
         }
 
     	&:hover {
-    		background-color: #f9f9f9;
+            border-color: blue;
+            color: blue;
+            background-color: rgba(blue, .05);
     	}
 
         &.is--loading {
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             overflow: hidden;
+            padding: 10px 0;
+            text-align: center;
+            opacity: .5;
+
+            &:hover {
+                background-color: transparent;
+            }
+
+            .countdown {
+                display: block;
+            }
 
             .fine {
                 display: none;
@@ -88,23 +104,21 @@
     ul {
     	list-style: none;
     	padding: 0;
-    	margin: 45px 0 45px;
+    	margin: 0 0 45px;
     }
 
     .veggie {
-        padding: 15px;
         position: relative;
-        border: 1px solid #ccc;
+        border: $border;
         text-align: left;
         margin-bottom: -1px;
         z-index: 1;
+        transition: all .15s ease;
 
-        &:hover {
-            .veggie__title {
-                text-decoration: underline;
-            }
+        &:hover {            
             z-index: 2;
             border-color: blue;
+            background-color: rgba(blue, .05);
 
             &:last-child {
                 border-color: blue;
@@ -113,7 +127,7 @@
 
         a {
             display: block;
-            
+            padding: 15px;
         }
 
         &__img {
@@ -143,7 +157,7 @@
         }
 
         &:last-child {
-            border-bottom: 1px solid #ccc;
+            border-bottom: $border;
             // border-radius: 0 0 4px 4px;
             margin-bottom: 0;
         }
