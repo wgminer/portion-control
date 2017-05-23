@@ -7,8 +7,7 @@
 
 $border: 1px solid #282828;
 
-#portion-control {
-	// END RESET
+#pc {
     color: #282828;
     position: fixed;
     top: 0;
@@ -19,147 +18,21 @@ $border: 1px solid #282828;
     z-index: 100000;
     font-size: 16px;
 	font-family: "Work Sans", "comic sans";
-    text-align: center;
+    text-align: left;
     line-height: 1.4;
 
-    .brand {
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 12px;
-        color: #ccc;
-        line-height: 45px;
-    }
+    .pc {
 
-    > div {
-    	width: 420px;
-        margin: 60px auto;
-    }
-
-    a {
-        color: blue;
-        text-decoration: none;
-    }
-
-    h1 {
-        color: inherit;
-    	font-size: 24px;
-    	margin: 0 0 15px;
-    	font-weight: 700;
-    	font-family: inherit;
-    }
-
-    p {
-        color: inherit;
-        margin: 0;
-    	font-size: 16px;
-    	font-family: inherit;
-    }
-
-    button {
-    	background: transparent;
-    	margin: 0;
-    	text-transform: uppercase;
-    	color: #282828;
-    	padding: 10px 15px;
-    	font-size: 12px;
-        line-height: 20px;
-    	border: $border;
-    	cursor: pointer;
-    	font-family: inherit;
-        transition: all .5s ease;
-        
-        .countdown {
-            display: none;
+        &-container {
+            max-width: 960px;
+            padding: 3rem;
+            width: 100%;
+            margin: 0 auto;
         }
 
-    	&:hover {
-            border-color: blue;
-            color: blue;
-            background-color: rgba(blue, .05);
-    	}
+        &-sentence {
 
-        &.is--loading {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            overflow: hidden;
-            padding: 10px 0;
-            text-align: center;
-            opacity: .5;
-
-            &:hover {
-                background-color: transparent;
-            }
-
-            .countdown {
-                display: block;
-            }
-
-            .fine {
-                display: none;
-            }
-        }
-    }
-
-    ul {
-    	list-style: none;
-    	padding: 0;
-    	margin: 0 0 45px;
-    }
-
-    .veggie {
-        position: relative;
-        border: $border;
-        text-align: left;
-        margin-bottom: -1px;
-        z-index: 1;
-        transition: all .15s ease;
-
-        &:hover {            
-            z-index: 2;
-            border-color: blue;
-            background-color: rgba(blue, .05);
-
-            &:last-child {
-                border-color: blue;
-            }
         }
 
-        a {
-            display: block;
-            padding: 15px;
-        }
-
-        &__img {
-            width: 60px;
-            height: 60px;
-            background-size: cover;
-            position: absolute;
-            left: 15px;
-            top: 15px;
-        }
-
-        &__title {
-            color: inherit;
-            font-weight: 700;
-            font-size: 16px;
-            margin: 0 0 5px;
-        }
-
-        &__description {
-            color: #282828;
-            font-size: 14px;
-            margin: 0;
-        }
-
-        &:first-child {
-            // border-radius: 4px 4px 0 0;
-        }
-
-        &:last-child {
-            border-bottom: $border;
-            // border-radius: 0 0 4px 4px;
-            margin-bottom: 0;
-        }
     }
 }
